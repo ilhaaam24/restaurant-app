@@ -16,6 +16,11 @@ class LocalDatabaseProvider extends ChangeNotifier {
   Restaurant? _restaurant;
   Restaurant? get restaurant => _restaurant;
 
+  set message(String value) {
+    _message = value;
+    notifyListeners();
+  }
+
   Future<void> saveRestaurantValue(Restaurant value) async {
     try {
       final result = await _sqliteService.insertItem(value);

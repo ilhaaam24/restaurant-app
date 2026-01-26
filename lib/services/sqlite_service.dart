@@ -38,7 +38,6 @@ class SqliteService {
 
     final data = restaurant.toJson();
 
-    
     final id = await db.insert(
       _tableName,
       data,
@@ -49,7 +48,7 @@ class SqliteService {
 
   Future<List<Restaurant>> getAllItems() async {
     final db = await _initializeDb();
-    final results = await db.query(_tableName, orderBy: "id");
+    final results = await db.query(_tableName);
 
     return results.map((result) => Restaurant.fromJson(result)).toList();
   }
