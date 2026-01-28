@@ -125,4 +125,38 @@ class LocalNotificationService {
       payload: payload,
     );
   }
+
+  Future<void> scheduleDailyElevenAMNotification({
+    required int id,
+    String channelId = "1",
+    String channelName = "Daily Notification",
+  }) async {
+    final androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      channelId,
+      channelName,
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+    const iOSPlatformChannelSpecifics = DarwinNotificationDetails();
+    final notificationDetails = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
+    );
+
+    await _requestExactAlarmsPermission();
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      id: id,
+      title: "Waktunya Makan Siang!",
+      body: "Yuk cari restaurant favoritmu untuk makan siang hari ini 🍽️",
+      scheduledDate: _nextInstanceOfElevenAM(),
+      notificationDetails: notificationDetails,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      matchDateTimeComponents: DateTimeComponents.time,
+    );
+  }
+
+  Future<void> cancelNotification(int id) async {
+    await flutterLocalNotificationsPlugin.cancel(id: id);
+  }
 }

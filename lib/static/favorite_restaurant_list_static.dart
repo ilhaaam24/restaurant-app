@@ -1,17 +1,17 @@
 import 'package:restaurant_app/model/restaurant_model.dart';
 
-sealed class FavoriteRestaurantListStatic {}
+sealed class FavoriteRestaurantListState {}
 
-class FavoriteRestaurantListInitial extends FavoriteRestaurantListStatic {}
+class FavoriteRestaurantListNoneState extends FavoriteRestaurantListState {}
 
-class FavoriteRestaurantListLoadingState extends FavoriteRestaurantListStatic {}
+class FavoriteRestaurantListLoadingState extends FavoriteRestaurantListState {}
 
-class FavoriteRestaurantListErrorState extends FavoriteRestaurantListStatic {
+class FavoriteRestaurantListErrorState extends FavoriteRestaurantListState {
   final String message;
   FavoriteRestaurantListErrorState(this.message);
 }
 
-class FavoriteRestaurantListLoadedState extends FavoriteRestaurantListStatic {
-  final List<Restaurant> data;
+class FavoriteRestaurantListLoadedState extends FavoriteRestaurantListState {
+  final List<Restaurant>? data;
   FavoriteRestaurantListLoadedState(this.data);
 }

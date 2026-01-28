@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/model/restaurant_model.dart';
 import 'package:restaurant_app/services/sqlite_service.dart';
+import 'package:restaurant_app/static/favorite_restaurant_list_static.dart';
 
 class LocalDatabaseProvider extends ChangeNotifier {
   final SqliteService _sqliteService;
@@ -21,6 +22,11 @@ class LocalDatabaseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  FavoriteRestaurantListState _favoriteRestaurantListState =
+      FavoriteRestaurantListNoneState();
+  FavoriteRestaurantListState get favoriteRestaurantListState =>
+      _favoriteRestaurantListState;
+
   Future<void> saveRestaurantValue(Restaurant value) async {
     try {
       final result = await _sqliteService.insertItem(value);
@@ -40,12 +46,23 @@ class LocalDatabaseProvider extends ChangeNotifier {
   }
 
   Future<void> getAllRestaurantValue() async {
+    _favoriteRestaurantListState = FavoriteRestaurantListLoadingState();
+    notifyListeners();
     try {
       final result = await _sqliteService.getAllItems();
       _restaurantList = result;
+      _favoriteRestaurantListState = FavoriteRestaurantListLoadedState(
+        _restaurantList,
+      );
+
+      if (_restaurantList!.isEmpty) {
+        _favoriteRestaurantListState = FavoriteRestaurantListNoneState();
+      }
       notifyListeners();
     } catch (e) {
-      _message = "Failed to get your data";
+      _favoriteRestaurantListState = FavoriteRestaurantListErrorState(
+        "Failed to get your data",
+      );
       notifyListeners();
     }
   }

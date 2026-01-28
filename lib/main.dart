@@ -15,6 +15,7 @@ import 'package:restaurant_app/services/api_services.dart';
 import 'package:restaurant_app/services/local_notification_service.dart';
 import 'package:restaurant_app/services/shared_preferences_service.dart';
 import 'package:restaurant_app/services/sqlite_service.dart';
+import 'package:restaurant_app/services/work_manager_service.dart';
 import 'package:restaurant_app/static/navigation_route.dart';
 import 'package:restaurant_app/style/theme/restaurant_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -58,12 +59,18 @@ void main() async {
           },
         ),
 
-        Provider(create: (context) => LocalNotificationService()..init()),
+        Provider(
+          create: (context) => LocalNotificationService()
+            ..init()
+            ..configureLocalTimeZone(),
+        ),
         ChangeNotifierProvider(
           create: (context) => LocalNotificationProvider(
             context.read<LocalNotificationService>(),
-          )..requestPermissions(),
+            context.read<SharedPreferencesService>(),
+          ),
         ),
+        Provider(create: (context) => WorkManagerService()..init()),
       ],
       child: const MyApp(),
     ),
